@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
-import mapboxgl from 'mapbox-gl';
+// import mapboxgl from 'mapbox-gl';
+import { Map, Popup, Marker } from 'mapbox-gl';
 import { PlacesService } from '../../services/places.service';
 
 @Component({
@@ -21,7 +22,7 @@ export class MapViewComponent implements AfterViewInit {
     //Sino tenemos location
     if (!this.placesService.useLoaction) throw Error('No hay placesService.userLocation');
 
-    const map = new mapboxgl.Map({
+    const map = new Map({
       container: this.mapDivElement.nativeElement, // container ID
       style: 'mapbox://styles/mapbox/streets-v11', // style URL
       center: this.placesService.useLoaction, // starting position [lng, lat]
@@ -29,8 +30,21 @@ export class MapViewComponent implements AfterViewInit {
       //projection: 'globe' // display the map as a 3D globe
     });
     map.on('style.load', () => {
-    map.setFog({}); // Set the default atmosphere style
+      map.setFog({}); // Set the default atmosphere style
     });
+
+
+    const popup = new Popup()
+      .setHTML(`
+        <h6>Aqui estoy</h6>
+        <span>Estoy en este lugar del mundo</span>
+    `);
+
+    //Creamos un nuevo marcador
+    new Marker({color:'red'})
+    .setLngLat(this.placesService.useLoaction)
+    .setPopup(popup)
+    .addTo(map)
   }
 
   // ngOnInit(): void {
